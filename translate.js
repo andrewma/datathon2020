@@ -24,7 +24,7 @@ module.exports.getJsonObject = () => {
       features = jsf.obj["features"]
       var sum = 0
       for (var i = 0; i < features.length; i++) {
-        var zip = features[i]["properties"]["zipcode"]
+        var zip = parseInt(features[i]["properties"]["zipcode"]).toString();
         if (map[zip] != undefined) {
           features[i]["properties"]["count"] = map[zip]
         } else {
