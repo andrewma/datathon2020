@@ -33,6 +33,10 @@ app.get('/data/affiliates.geojson', function(req, res){
     res.sendFile(__dirname + '/data/affiliates.geojson');
 });
 
+app.get('/map.js', function(req, res){
+
+    res.sendFile(__dirname + '/map.js');
+});
 
 io.on('connection', function(socket){
     // io.emit('train complete');

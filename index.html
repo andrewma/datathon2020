@@ -5,7 +5,7 @@
     <title>Zipcode Heatmap</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 
-    <!-- <script src='/script.js'></script> -->
+    <script src='map.js'></script>
 
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.45.0/mapbox-gl.js'></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.45.0/mapbox-gl.css' rel='stylesheet' />
@@ -13,6 +13,15 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <!-- <script>
       
     </script> -->
@@ -56,15 +65,22 @@
         #map { height: 600px; }
     </style>
 </head>
-<body>
+<body onload="readTextFile()">
 
-
+<div class="container">
+<h1 align='center'>Team 61 Sales Dashboard</h1>
 <div id='map'></div>
-<form id='form' action="/signUpUser" method="get" role="form">
-  <label for="budget">Budget:</label>
-  <input type="text" id="budget" name="parameters"><br><br>
-  <input type="submit" value="Submit">
-</form>
+<br>
+<div id='formDiv' align='center'>
+    <form id='form' action="/signUpUser" method="get" role="form">
+      <label for="budget">Budget:</label>
+      <input type="text" id="budget" name="parameters">
+      <input type="submit" value="Submit">
+    </form>
+</div>
+
+<div id='ziptable'></div>
+</div>
 
 
 <script>
