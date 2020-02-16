@@ -21,7 +21,7 @@ function readTextFile()
     var obj = JSON.parse(answer);
     var feats = obj.features;
     var len = feats.length;
-    var table = "<table>";
+    var table = "<table align='center'>";
     table += "<tr>" + "<th>" + "ZIP Code" + "</th>" + "<th>" + "Money" + "</th>" + "</tr>";
     for (var i = 0; i < numRows; i++) {
         table += "<tr>";
