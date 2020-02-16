@@ -27,14 +27,16 @@ const zipcodes = [
 
 - Add mapbox token in map.html as the value of `mapboxgl.accessToken`
 
+- Run ```npm install``` to install dependencies (only needed once)
+
 - Download the zipcode data from the [US Census]('http://www.census.gov/geo/maps-da    ta/data/gazetteer.html') and unzip into the `data` dirctory (The name is currently hard-coded to 2017)
 
-- Run process.js
+- Run ```node process.js```
 
 - Run a simple server (because CORS)
 
 ```
-python -m SimpleHTTPServer 8000
+python -m http.server 8000
 ```
 
 - Open localhost:8000/map.html in your browser
