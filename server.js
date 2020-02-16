@@ -1,6 +1,7 @@
 var app = require('express')();
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
+var { getJsonObject } = require('./translate.js');
 const { exec } = require('child_process');
 
 app.get('/', function(req, res){
@@ -37,7 +38,7 @@ io.on('connection', function(socket){
     // io.emit('train complete');
   socket.on('train request', function(budget, msg3){
     console.log('message: ' + budget + msg3);
-    exec('python train.py', (err, stdout, stderr) => {
+    exec('python train.py ' + msg3, (err, stdout, stderr) => {
             if (err) {
               //some err occurred
               console.error(err)
@@ -45,7 +46,8 @@ io.on('connection', function(socket){
              // the *entire* stdout and stderr (buffered)
              console.log(`stdout: ${stdout}`);
              console.log(`stderr: ${stderr}`);
-            io.emit('train complete');
+             getJsonObject()
+             io.emit('train complete');
             }
           });
   });

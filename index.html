@@ -32,7 +32,7 @@
                     // baseExp : $('#budget').val(),
                     // advertisingPercent: $('#lastName').val(),
                     budget: $('#budget').val(),
-                    // iterations: 
+                    // iterations:
                 },
                 success: function(response) {
                     console.log(response);
@@ -45,7 +45,7 @@
                 //  $('#output').text(data.output).show();
                 console.log(JSON.stringify(data));
              });
-            
+
             event.preventDefault();
             });
         });
@@ -76,7 +76,7 @@ $(function () {
                 $('#budget').val('');
                 return false;
             });
-        
+
 
 mapboxgl.accessToken = 'pk.eyJ1Ijoibm1hcmdvbGlzbWIiLCJhIjoiY2plNHhjdndxMmN1NzJ3cWxqNXU1MnJhdiJ9.bHMdHk0nRlQPFNuOjM3HIw';
 var map = new mapboxgl.Map({
@@ -91,14 +91,6 @@ map.on('load', function() {
     map.addSource('zipcodes', {
         "type": "geojson",
         "data": "/data/zipcodes.geojson",
-    });
-
-    map.addSource('affiliates', {
-        "type": "geojson",
-        "data": "/data/affiliates.geojson",
-        "cluster": true,
-        "clusterMaxZoom": 22, // Max zoom to cluster points on
-        "clusterRadius": 20 // Radius of each cluster when clustering points (defaults to 50)
     });
 
     map.addLayer({
@@ -156,7 +148,7 @@ map.on('load', function() {
         }
     });
 
-    
+
 
      map.addLayer({ "id": "zipcode-heat",
             "type": "heatmap",
@@ -243,11 +235,11 @@ map.on('load', function() {
 socket.on('train complete', function(){
     // Add a geojson point source.
     // Heatmap layers also work with a vector tile source.
-    
-    
+
+
     map.removeLayer("zipcode-heat");
     map.removeLayer("zipcodes-heat");
-    map.removeSource("affiliates");
+    // map.removeSource("affiliates");
     map.removeSource("zipcodes");
     map.addSource('zipcodes', {
         "type": "geojson",

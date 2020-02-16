@@ -6,6 +6,7 @@ from scipy import optimize
 from scipy.optimize import LinearConstraint
 from scipy.optimize import Bounds
 
+print(sys.argv)
 arglen = len(sys.argv)
 if arglen != 6:
     print("Err")
