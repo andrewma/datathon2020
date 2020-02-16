@@ -73,8 +73,21 @@
 <br>
 <div id='formDiv' align='center'>
     <form id='form' action="/signUpUser" method="get" role="form">
+      <label for="industry">Industry:</label>
+      <input type="text" id="industry" name="parameters" value='Retail_trade'>
+
       <label for="budget">Budget:</label>
-      <input type="text" id="budget" name="parameters">
+      <input type="text" id="budget" name="parameters" value=10000000>
+
+      <label for="iterations">Iterations:</label>
+      <input type="text" id="iterations" name="parameters" value=30>
+
+      <label for="numZips">Total ZIPs:</label>
+      <input type="text" id="numZips" name="parameters" value=150>
+
+      <label for="percentRev">Revenue Percent:</label>
+      <input type="text" id="percentRev" name="parameters" value=0.08>
+
       <input type="submit" value="Submit">
     </form>
 </div>
@@ -88,8 +101,12 @@ $(function () {
             var socket = io();
             $('form').submit(function(e){
                 e.preventDefault(); // prevents page reloading
-                socket.emit('train request', $('#budget').val(), $('#budget').val());
-                $('#budget').val('');
+                var emitStr = $('#industry').val() + " " +
+                  $('#budget').val() + " " + $('#iterations').val() + " " +
+                  $('#numZips').val() + " " + $('#percentRev').val()
+                console.log(emitStr)
+                socket.emit('train request', emitStr, emitStr);
+                // $('#budget').val('');
                 return false;
             });
 
@@ -249,6 +266,7 @@ map.on('load', function() {
         })
 
 socket.on('train complete', function(){
+    readTextFile()
     // Add a geojson point source.
     // Heatmap layers also work with a vector tile source.
 
