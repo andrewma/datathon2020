@@ -22,7 +22,7 @@ function readTextFile()
     var feats = obj.features;
     var len = feats.length;
     var table = "<table align='center'>";
-    table += "<tr>" + "<th align='center'>" + "ZIP Code" + "</th>" + "<th align='right'>" + "Money" + "</th>" + "</tr>";
+    table += "<tr>" + "<th align='center'>" + "ZIP &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; " + "</th>" + "<th align='right'>" + "Money" + "</th>" + "</tr>";
     for (var i = 0; i < len; i++) {
         table += "<tr>";
         table += "<td>";
