@@ -23,7 +23,7 @@ function readTextFile()
     var len = feats.length;
     var table = "<table align='center'>";
     table += "<tr>" + "<th>" + "ZIP Code" + "</th>" + "<th>" + "Money" + "</th>" + "</tr>";
-    for (var i = 0; i < numRows; i++) {
+    for (var i = 0; i < len; i++) {
         table += "<tr>";
         table += "<td>";
         table += feats[i].properties.zipcode;
