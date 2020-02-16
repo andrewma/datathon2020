@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>Zipcode Heatmap</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+
+    <!-- <script src='/script.js'></script> -->
+
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.45.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.45.0/mapbox-gl.css' rel='stylesheet' />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <!-- <script>
+      
+    </script> -->
+
+
+    <!-- <script>
+        $(document).ready(function() {
+            console.log("loaded");
+            $('#form').on('submit', function(event) {
+                console.log("reaced");
+                console.log($('#budget').val())
+              $.ajax({
+                url: '/signUpUser',
+                type: 'POST',
+                dataType:'json',
+                data : {
+                    // baseExp : $('#budget').val(),
+                    // advertisingPercent: $('#lastName').val(),
+                    budget: $('#budget').val(),
+                    // iterations: 
+                },
+                success: function(response) {
+                    console.log(response);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            })
+            .done(function(data) {
+                //  $('#output').text(data.output).show();
+                console.log(JSON.stringify(data));
+             });
+            
+            event.preventDefault();
+            });
+        });
+    </script> -->
+
+    <style>
+        body { margin:0; padding:0; }
+        #map { height: 600px; }
+    </style>
+</head>
+<body>
+
+
+<div id='map'></div>
+<form id='form' action="/signUpUser" method="get" role="form">
+  <label for="budget">Budget:</label>
+  <input type="text" id="budget" name="parameters"><br><br>
+  <input type="submit" value="Submit">
+</form>
+
+
+<script>
+$(function () {
+            var socket = io();
+            $('form').submit(function(e){
+                e.preventDefault(); // prevents page reloading
+                socket.emit('train request', $('#budget').val(), $('#budget').val());
+                $('#budget').val('');
+                return false;
+            });
+        
+
+mapboxgl.accessToken = 'pk.eyJ1Ijoibm1hcmdvbGlzbWIiLCJhIjoiY2plNHhjdndxMmN1NzJ3cWxqNXU1MnJhdiJ9.bHMdHk0nRlQPFNuOjM3HIw';
+var map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/nmargolismb/cjihqttzg0zr92toz7xe1726d',
+    center: [-98.5, 39.8],
+    zoom: 3
+});
+
+
+map.on('load', function() {
+    map.addSource('zipcodes', {
+        "type": "geojson",
+        "data": "/data/zipcodes.geojson",
+    });
+
+    map.addSource('affiliates', {
+        "type": "geojson",
+        "data": "/data/affiliates.geojson",
+        "cluster": true,
+        "clusterMaxZoom": 22, // Max zoom to cluster points on
+        "clusterRadius": 20 // Radius of each cluster when clustering points (defaults to 50)
+    });
+
+    map.addLayer({
+        "id": "zipcodes-heat",
+        "type": "heatmap",
+        "source": "zipcodes",
+        "paint": {
+            // Increase the heatmap weight based on frequency and property count
+            "heatmap-weight": [
+                "interpolate",
+                ["linear"],
+                ["get", "count"],
+                0, 0,
+                15, 0.5,
+                40, 1
+            ],
+            // Increase the heatmap color weight weight by zoom level
+            // heatmap-intensity is a multiplier on top of heatmap-weight
+            "heatmap-intensity": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                0, 0.25,
+                3, 2,
+                9, 3
+            ],
+            // Color ramp for heatmap.  Domain is 0 (low) to 1 (high).
+            // Begin color ramp at 0-stop with a 0-transparancy color
+            // to create a blur-like effect.
+            "heatmap-color": [
+                "interpolate",
+                ["linear"],
+                ["heatmap-density"],
+                0, "rgba(33,102,172,0)",
+                0.2, "rgb(27, 149, 142)",
+                0.75, "rgb(255,255,100)",
+                1, "rgb(242, 97, 34)",
+            ],
+            // Adjust the heatmap radius by zoom level
+            "heatmap-radius": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                0, 10,
+                9, 15
+            ],
+            // Transition from heatmap to circle layer by zoom level
+            "heatmap-opacity": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                7, 1,
+                12, 0
+            ],
+        }
+    });
+
+    
+
+     map.addLayer({ "id": "zipcode-heat",
+            "type": "heatmap",
+            "source": "zipcodes",
+            // "source-layer": "zipcode-heatmap",
+            "paint": {
+                "heatmap-radius": [
+                    "interpolate",
+                    [
+                        "exponential",
+                        1.26
+                    ],
+                    [
+                        "zoom"
+                    ],
+                    0,
+                    2,
+                    3,
+                    8,
+                    6,
+                    18,
+                    10,
+                    20
+                ],
+                "heatmap-weight": [
+                    "interpolate",
+                    [
+                        "exponential",
+                        1.005
+                    ],
+                    [
+                        "get",
+                        "count"
+                    ],
+                    0,
+                    0,
+                    1,
+                    0.05,
+                    246,
+                    0.25,
+                    491,
+                    0.5,
+                    700,
+                    1
+                ],
+                "heatmap-color": [
+                    "interpolate",
+                    [
+                        "linear"
+                    ],
+                    [
+                        "heatmap-density"
+                    ],
+                    0,
+                    "hsla(240, 100%, 50%, 0)",
+                    0.2,
+                    "hsl(172, 100%, 32%)",
+                    0.35,
+                    "hsl(172, 100%, 32%)",
+                    0.6,
+                    "hsl(46, 100%, 60%)",
+                    1,
+                    "hsl(14, 89%, 54%)"
+                ],
+                "heatmap-intensity": [
+                    "interpolate",
+                    [
+                        "linear"
+                    ],
+                    [
+                        "zoom"
+                    ],
+                    0,
+                    0.4,
+                    5,
+                    1.75,
+                    9,
+                    2.5
+                ],
+                "heatmap-opacity": 1
+            }
+        })
+
+socket.on('train complete', function(){
+    // Add a geojson point source.
+    // Heatmap layers also work with a vector tile source.
+    
+    
+    map.removeLayer("zipcode-heat");
+    map.removeLayer("zipcodes-heat");
+    map.removeSource("affiliates");
+    map.removeSource("zipcodes");
+    map.addSource('zipcodes', {
+        "type": "geojson",
+        "data": "/data/zipcodes.geojson",
+    });
+    map.addLayer({
+        "id": "zipcodes-heat",
+        "type": "heatmap",
+        "source": "zipcodes",
+        "paint": {
+            // Increase the heatmap weight based on frequency and property count
+            "heatmap-weight": [
+                "interpolate",
+                ["linear"],
+                ["get", "count"],
+                0, 0,
+                15, 0.5,
+                40, 1
+            ],
+            // Increase the heatmap color weight weight by zoom level
+            // heatmap-intensity is a multiplier on top of heatmap-weight
+            "heatmap-intensity": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                0, 0.25,
+                3, 2,
+                9, 3
+            ],
+            // Color ramp for heatmap.  Domain is 0 (low) to 1 (high).
+            // Begin color ramp at 0-stop with a 0-transparancy color
+            // to create a blur-like effect.
+            "heatmap-color": [
+                "interpolate",
+                ["linear"],
+                ["heatmap-density"],
+                0, "rgba(33,102,172,0)",
+                0.2, "rgb(27, 149, 142)",
+                0.75, "rgb(255,255,100)",
+                1, "rgb(242, 97, 34)",
+            ],
+            // Adjust the heatmap radius by zoom level
+            "heatmap-radius": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                0, 10,
+                9, 15
+            ],
+            // Transition from heatmap to circle layer by zoom level
+            "heatmap-opacity": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                7, 1,
+                12, 0
+            ],
+        }
+    });
+
+     map.addLayer({ "id": "zipcode-heat",
+            "type": "heatmap",
+            "source": "zipcodes",
+            // "source-layer": "zipcode-heatmap",
+            "paint": {
+                "heatmap-radius": [
+                    "interpolate",
+                    [
+                        "exponential",
+                        1.26
+                    ],
+                    [
+                        "zoom"
+                    ],
+                    0,
+                    2,
+                    3,
+                    8,
+                    6,
+                    18,
+                    10,
+                    20
+                ],
+                "heatmap-weight": [
+                    "interpolate",
+                    [
+                        "exponential",
+                        1.005
+                    ],
+                    [
+                        "get",
+                        "count"
+                    ],
+                    0,
+                    0,
+                    1,
+                    0.05,
+                    246,
+                    0.25,
+                    491,
+                    0.5,
+                    700,
+                    1
+                ],
+                "heatmap-color": [
+                    "interpolate",
+                    [
+                        "linear"
+                    ],
+                    [
+                        "heatmap-density"
+                    ],
+                    0,
+                    "hsla(240, 100%, 50%, 0)",
+                    0.2,
+                    "hsl(172, 100%, 32%)",
+                    0.35,
+                    "hsl(172, 100%, 32%)",
+                    0.6,
+                    "hsl(46, 100%, 60%)",
+                    1,
+                    "hsl(14, 89%, 54%)"
+                ],
+                "heatmap-intensity": [
+                    "interpolate",
+                    [
+                        "linear"
+                    ],
+                    [
+                        "zoom"
+                    ],
+                    0,
+                    0.4,
+                    5,
+                    1.75,
+                    9,
+                    2.5
+                ],
+                "heatmap-opacity": 1
+            }
+        })
+});
+});
+});
+</script>
+
+</body>
+</html>
